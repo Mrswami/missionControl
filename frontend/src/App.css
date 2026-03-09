@@ -1,9 +1,49 @@
+:root {
+    --github-bg: #0d1117;
+    --github-border: #30363d;
+    --github-green: #3fb950;
+    --github-red: #f85149;
+    --github-yellow: #d29922;
+    --github-blue: #58a6ff;
+    --card-glass: rgba(22, 27, 34, 0.7);
+}
+
+body {
+    margin: 0;
+    background-color: var(--github-bg);
+    background-image:
+        linear-gradient(rgba(58, 134, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(58, 134, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    color: #c9d1d9;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+#root {
+    width: 100%;
+    height: 100vh;
+}
+
 .mission-control {
     width: 100%;
     height: 100vh;
-    padding: 2rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Atmospheric glow in the background */
+.mission-control::before {
+    content: "";
+    position: absolute;
+    top: -10%;
+    right: -10%;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, rgba(58, 134, 255, 0.05) 0%, transparent 70%);
+    z-index: -1;
 }
 
 .header {
@@ -11,73 +51,94 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    padding: 1rem 2rem;
-    border-radius: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--card-glass);
+    backdrop-filter: blur(20px);
+    padding: 1rem 2.5rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--github-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.2rem;
 }
 
 .logo-container h1 {
     margin: 0;
-    font-size: 1.5rem;
-    letter-spacing: 0.1rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.2rem;
+    background: linear-gradient(to right, #fff, #8b949e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 300;
     color: #8b949e;
-    border-left: 1px solid #30363d;
-    padding-left: 0.5rem;
-    margin-left: 0.5rem;
+    border-left: 2px solid var(--github-border);
+    padding-left: 1rem;
+    margin-left: 1rem;
 }
 
 .pulse-icon {
-    color: #3fb950;
-    animation: pulse 2s infinite ease-in-out;
+    color: var(--github-green);
+    filter: drop-shadow(0 0 8px var(--github-green));
 }
 
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
 
-    50% {
-        transform: scale(1.1);
-        opacity: 0.8;
-    }
+.sound-toggle {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--github-border);
+    color: #8b949e;
+    padding: 0.6rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+.sound-toggle.on {
+    color: var(--github-blue);
+    background: rgba(88, 166, 255, 0.1);
+    border-color: rgba(88, 166, 255, 0.3);
+}
+
+.sound-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
 }
 
 .connection-status {
-    font-size: 0.75rem;
-    font-weight: bold;
-    letter-spacing: 0.05rem;
-    padding: 0.5rem 1rem;
-    border-radius: 2rem;
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.1rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    text-transform: uppercase;
 }
 
 .online {
-    color: #3fb950;
+    color: var(--github-green);
     background: rgba(63, 185, 80, 0.1);
+    border: 1px solid rgba(63, 185, 80, 0.2);
 }
 
 .offline {
-    color: #f85149;
+    color: var(--github-red);
     background: rgba(248, 81, 73, 0.1);
-    animation: flicker 1.5s infinite;
+    border: 1px solid rgba(248, 81, 73, 0.2);
+    animation: flicker 2s infinite;
 }
 
 @keyframes flicker {
@@ -88,7 +149,7 @@
     }
 
     50% {
-        opacity: 0.5;
+        opacity: 0.4;
     }
 }
 
@@ -96,19 +157,23 @@
     flex: 1;
     display: grid;
     gap: 1.5rem;
-    transition: all 0.5s ease;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .grid-1 {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(300px, 600px);
+    justify-content: center;
+    align-content: center;
 }
 
 .grid-2 {
     grid-template-columns: repeat(2, 1fr);
+    align-content: center;
 }
 
 .grid-3 {
     grid-template-columns: repeat(3, 1fr);
+    align-content: center;
 }
 
 .grid-4 {
@@ -129,102 +194,190 @@
 }
 
 .action-card {
-    background: rgba(48, 54, 61, 0.4);
-    backdrop-filter: blur(8px);
-    border-radius: 1.25rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1.5rem;
+    background: var(--card-glass);
+    backdrop-filter: blur(12px);
+    border-radius: 1.5rem;
+    border: 1px solid var(--github-border);
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
     border-left-width: 8px;
-    /* Highlighting the status with a bold edge */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease;
 }
 
-.action-card:hover {
-    transform: translateY(-5px);
-    background: rgba(48, 54, 61, 0.6);
+.action-card.in_progress {
+    box-shadow: 0 0 30px rgba(63, 185, 80, 0.1);
+    animation: breathing-green 4s infinite ease-in-out;
+}
+
+@keyframes breathing-green {
+
+    0%,
+    100% {
+        border-color: var(--github-border);
+    }
+
+    50% {
+        border-color: var(--github-green);
+    }
 }
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    margin-bottom: 2rem;
 }
 
 .repo-name {
     display: block;
-    font-weight: 700;
-    font-size: 1.2rem;
-    color: #c9d1d9;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: #fff;
+    letter-spacing: -0.02rem;
 }
 
 .org-name {
     font-size: 0.75rem;
     color: #8b949e;
-    text-transform: uppercase;
+    font-weight: 600;
     letter-spacing: 0.1rem;
 }
 
+.workflow-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
 .workflow-name {
-    margin: 1rem 0;
-    font-size: 1.4rem;
-    font-weight: 400;
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
     color: #f0f6fc;
+    line-height: 1.2;
+}
+
+.branch-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(88, 166, 255, 0.1);
+    color: var(--github-blue);
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border: 1px solid rgba(88, 166, 255, 0.2);
+    white-space: nowrap;
+}
+
+.commit-message {
+    margin: 0 0 1.5rem 0;
+    font-size: 0.9rem;
+    color: #8b949e;
+    font-style: italic;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.progress-section {
+    margin-bottom: 1.5rem;
+}
+
+.progress-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #c9d1d9;
+    margin-bottom: 0.6rem;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--github-green), #4ae35e);
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(63, 185, 80, 0.3);
+}
+
+.workflow-details {
+    display: flex;
+    flex-direction: column;
 }
 
 .meta {
     display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
 }
 
 .meta-item {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
+    gap: 0.6rem;
+    font-size: 0.9rem;
     color: #8b949e;
 }
 
 .card-footer {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.status-pill {
-    padding: 0.3rem 0.8rem;
+.status-tag {
+    font-size: 0.65rem;
+    font-weight: 900;
+    padding: 0.4rem 0.8rem;
     border-radius: 2rem;
-    font-size: 0.75rem;
-    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.05rem;
+    letter-spacing: 0.1rem;
 }
 
-.in_progress {
+.status-tag.in_progress {
     background: rgba(63, 185, 80, 0.2);
-    color: #3fb950;
+    color: var(--github-green);
+    border: 1px solid rgba(63, 185, 80, 0.3);
 }
 
-.queued {
+.status-tag.queued {
     background: rgba(210, 153, 34, 0.2);
-    color: #d29922;
+    color: var(--github-yellow);
+    border: 1px solid rgba(210, 153, 34, 0.3);
 }
 
-.completed {
-    background: rgba(139, 148, 158, 0.2);
-    color: #8b949e;
+.status-tag.completed {
+    background: rgba(88, 166, 255, 0.2);
+    color: var(--github-blue);
+    border: 1px solid rgba(88, 166, 255, 0.3);
 }
 
-.failure {
+.status-tag.failure {
     background: rgba(248, 81, 73, 0.2);
-    color: #f85149;
+    color: var(--github-red);
+    border: 1px solid rgba(248, 81, 73, 0.3);
 }
 
 .empty-state {
@@ -233,18 +386,20 @@
     align-items: center;
     justify-content: center;
     color: #484f58;
-    gap: 1rem;
+    gap: 2rem;
     height: 60vh;
 }
 
 .empty-state p {
     font-size: 1.2rem;
-    max-width: 400px;
+    font-weight: 300;
+    max-width: 450px;
     text-align: center;
+    line-height: 1.6;
 }
 
 .animate-spin {
-    animation: spinner 1.2s linear infinite;
+    animation: spinner 1s linear infinite;
 }
 
 @keyframes spinner {
@@ -253,11 +408,17 @@
     }
 }
 
-a {
-    color: #58a6ff;
-    transition: color 0.2s;
+.view-link {
+    color: var(--github-blue);
+    opacity: 0.7;
+    transition: all 0.2s;
 }
 
-a:hover {
-    color: #79c0ff;
+.view-link:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+a {
+    text-decoration: none;
 }

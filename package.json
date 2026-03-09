@@ -2,10 +2,14 @@
   "name": "missioncontrol",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "tray.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "bg:start": "npx pm2 start ecosystem.config.js",
+    "bg:stop": "npx pm2 stop ecosystem.config.js",
+    "tray": "electron .",
+    "tray:silent": "wscript.exe launch-tray.vbs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -22,6 +26,8 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "electron": "^40.8.0",
+    "nodemon": "^3.1.14",
+    "pm2": "^6.0.14"
   }
 }

@@ -28,6 +28,11 @@ app.use(cors());
 
 // Webhook Verification Middleware
 const verifySignature = (req, res, next) => {
+    // Skip verification for local testing from localhost
+    if (req.headers['host'].includes('localhost') || req.headers['host'].includes('127.0.0.1')) {
+        return next();
+    }
+
     const signature = req.headers['x-hub-signature-256'];
     if (!signature) {
         return res.status(401).send('No signature found');
@@ -73,6 +78,8 @@ app.post('/webhooks/github', verifySignature, (req, res) => {
             data.status = payload.workflow_run.status;
             data.conclusion = payload.workflow_run.conclusion;
             data.name = payload.workflow_run.name;
+            data.branch = payload.workflow_run.head_branch;
+            data.commitMessage = payload.workflow_run.display_title;
         }
 
         if (event === 'workflow_job') {
@@ -81,18 +88,20 @@ app.post('/webhooks/github', verifySignature, (req, res) => {
             data.status = payload.workflow_job.status;
             data.conclusion = payload.workflow_job.conclusion;
             data.name = payload.workflow_job.name;
+            data.stepsTotal = payload.workflow_job.steps ? payload.workflow_job.steps.length : 0;
+            data.stepsCompleted = payload.workflow_job.steps ? payload.workflow_job.steps.filter(s => s.status === 'completed').length : 0;
         }
 
         // Update internal state
         activeWorkflows[data.id] = data;
 
-        // Clean up if completed
-        if (data.status === 'completed') {
-            // Keep it for a bit so frontend can show results, then clear maybe?
-            setTimeout(() => {
-                delete activeWorkflows[data.id];
-                io.emit('workflow_removed', data.id);
-            }, 60000); // Wait 1 minute before removing
+        // Update internal state
+        activeWorkflows[data.id] = data;
+
+        // Keep memory limited to the last 20 actions
+        const keys = Object.keys(activeWorkflows);
+        if (keys.length > 20) {
+            delete activeWorkflows[keys[0]];
         }
 
         // Broadcast to all connected clients

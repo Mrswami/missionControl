@@ -38,9 +38,28 @@ npx localtunnel --port 3000
 4.  **Secret**: (Must match your `.env` GITHUB_WEBHOOK_SECRET)
 5.  **Events**: Select "Workflow runs" and "Workflow jobs".
 
-## Simulated Testing
-You can test the UI without actual GitHub events by running:
+## Background & System Tray Operations
+You can now run Mission Control as a persistent background service with a system tray icon.
+
+### 1. Start in Background (with Tray Icon)
+Run this command to launch the system tray app, which will automatically start the backend and tunnel in the background:
 ```bash
-node test-webhook.js
+npm run tray:silent
 ```
-This will send three mock events to the local backend.
+- **Silent Mode**: This command will "poof" the icon into your system tray and then immediately free up your terminal. You can safely close the window, and the radar icon will stay active!
+- **Tray Icon**: Look for the Mission Control logo in your Windows system tray (near the clock).
+- **Menu**: Right-click the icon to open the dashboard or stop services.
+
+### 2. Manual Background Control (PM2)
+If you just want the services without the icon:
+- **Start**: `npm run bg:start`
+- **Stop**: `npm run bg:stop`
+- **Status**: `npx pm2 list`
+
+### 3. Open Dashboard
+The dashboard will be available at:
+- **Local**: `http://localhost:5173`
+- **External**: Check your tunnel URL (configured in `ecosystem.config.js`).
+
+## Simulated Testing
+...

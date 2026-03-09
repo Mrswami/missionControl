@@ -25,26 +25,30 @@ const sendWebhook = async (event, payload) => {
 };
 
 const runTest = async () => {
-    // 1. Send an "In Progress" update
+    console.log("🚀 Starting Mission Control Feature Test...");
+
+    // 1. Send an "In Progress" update with branch and commit info
     await sendWebhook('workflow_run', {
         action: 'requested',
         workflow_run: {
             id: 12345,
             name: 'Production Build',
             status: 'in_progress',
-            conclusion: null
+            conclusion: null,
+            head_branch: 'main',
+            display_title: 'feat: add real-time telemetry to mission control'
         },
         repository: {
             full_name: 'acme/gitMonitor'
         },
         sender: {
-            login: 'jdoe'
+            login: 'jmore'
         }
     });
 
     await new Promise(r => setTimeout(r, 2000));
 
-    // 2. Send another one (parallel)
+    // 2. Send a job with step progress
     await sendWebhook('workflow_job', {
         action: 'in_progress',
         workflow_job: {
@@ -52,34 +56,96 @@ const runTest = async () => {
             run_id: 12345,
             name: 'Unit Tests',
             status: 'in_progress',
-            conclusion: null
+            conclusion: null,
+            steps: [
+                { name: 'Setup', status: 'completed' },
+                { name: 'Install Deps', status: 'completed' },
+                { name: 'Run Jest', status: 'in_progress' },
+                { name: 'Upload Artifacts', status: 'queued' },
+                { name: 'Cleanup', status: 'queued' }
+            ]
         },
         repository: {
             full_name: 'acme/gitMonitor'
         },
         sender: {
-            login: 'jdoe'
+            login: 'jmore'
         }
     });
 
-    await new Promise(r => setTimeout(r, 5000));
+    await new Promise(r => setTimeout(r, 3000));
 
-    // 3. Complete them
+    // 3. Update job progress
+    await sendWebhook('workflow_job', {
+        action: 'in_progress',
+        workflow_job: {
+            id: 67890,
+            run_id: 12345,
+            name: 'Unit Tests',
+            status: 'in_progress',
+            conclusion: null,
+            steps: [
+                { name: 'Setup', status: 'completed' },
+                { name: 'Install Deps', status: 'completed' },
+                { name: 'Run Jest', status: 'completed' },
+                { name: 'Upload Artifacts', status: 'completed' },
+                { name: 'Cleanup', status: 'in_progress' }
+            ]
+        },
+        repository: {
+            full_name: 'acme/gitMonitor'
+        },
+        sender: {
+            login: 'jmore'
+        }
+    });
+
+    await new Promise(r => setTimeout(r, 3000));
+
+    // 4. Complete them both
+    await sendWebhook('workflow_job', {
+        action: 'completed',
+        workflow_job: {
+            id: 67890,
+            run_id: 12345,
+            name: 'Unit Tests',
+            status: 'completed',
+            conclusion: 'success',
+            steps: [
+                { name: 'Setup', status: 'completed' },
+                { name: 'Install Deps', status: 'completed' },
+                { name: 'Run Jest', status: 'completed' },
+                { name: 'Upload Artifacts', status: 'completed' },
+                { name: 'Cleanup', status: 'completed' }
+            ]
+        },
+        repository: {
+            full_name: 'acme/gitMonitor'
+        },
+        sender: {
+            login: 'jmore'
+        }
+    });
+
     await sendWebhook('workflow_run', {
         action: 'completed',
         workflow_run: {
             id: 12345,
             name: 'Production Build',
             status: 'completed',
-            conclusion: 'success'
+            conclusion: 'success',
+            head_branch: 'main',
+            display_title: 'feat: add real-time telemetry to mission control'
         },
         repository: {
             full_name: 'acme/gitMonitor'
         },
         sender: {
-            login: 'jdoe'
+            login: 'jmore'
         }
     });
+
+    console.log("✅ Test sequence complete.");
 };
 
 runTest();
